@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MarketBridge | BANT Qualification</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: #000000;
+    color: #f5f5f5;
+    min-height: 100vh;
+    padding: 40px 20px;
+    line-height: 1.5;
+    transition: background-color 0.35s ease;
+  }
+  body.pass { background: #2E8B1F; }
+  body.fail { background: #F05A28; }
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+  }
+  header {
+    border-bottom: 1px solid #222;
+    padding-bottom: 20px;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+  }
+  .brand img {
+    height: 48px;
+    width: auto;
+    display: block;
+  }
+  .brand .fallback {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.8px;
+    color: #ffffff;
+  }
+  .tagline {
+    font-size: 13px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+  h1 {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #ffffff;
+  }
+  .subtitle {
+    color: #9a9a9a;
+    font-size: 15px;
+    margin-bottom: 36px;
+  }
+  .section {
+    background: #0d0d0d;
+    border: 1px solid #1f1f1f;
+    border-radius: 10px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  .section-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #2196F3;
+    margin-bottom: 16px;
+  }
+  .field { margin-bottom: 18px; }
+  .field:last-child { margin-bottom: 0; }
+  label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #e8e8e8;
+  }
+  .hint {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 10px;
+  }
+  input[type="text"], input[type="number"], textarea {
+    width: 100%;
+    padding: 11px 14px;
+    background: #000;
+    border: 1px solid #2a2a2a;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 14px;
+    font-family: inherit;
+    transition: border-color 0.15s;
+  }
+  input[type="text"]:focus, input[type="number"]:focus, textarea:focus {
+    outline: none;
+    border-color: #2196F3;
+  }
+  textarea { resize: vertical; min-height: 80px; }
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 540px) { .two-col { grid-template-columns: 1fr; } }
+
+  .toggle-group {
+    display: inline-flex;
+    background: #000;
+    border: 1px solid #2a2a2a;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .toggle-group input { display: none; }
+  .toggle-group label {
+    margin: 0;
+    padding: 9px 22px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: #999;
+    transition: all 0.15s;
+    border-right: 1px solid #2a2a2a;
+  }
+  .toggle-group label:last-child { border-right: none; }
+  .toggle-group input:checked + label.yes {
+    background: #2196F3;
+    color: #000;
+  }
+  .toggle-group input:checked + label.no {
+    background: #e53e5e;
+    color: #fff;
+  }
+
+  .criterion {
+    padding: 16px 0;
+    border-bottom: 1px solid #1a1a1a;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .criterion:last-child { border-bottom: none; padding-bottom: 0; }
+  .criterion:first-child { padding-top: 0; }
+  .criterion-text { flex: 1; min-width: 260px; }
+  .criterion-title { font-weight: 600; color: #fff; margin-bottom: 4px; }
+  .criterion-q { font-size: 13px; color: #9a9a9a; }
+
+  .budget-input-wrap { position: relative; display: flex; align-items: center; }
+  .budget-input-wrap::before {
+    content: "$";
+    position: absolute;
+    left: 14px;
+    color: #888;
+    font-size: 14px;
+  }
+  .budget-input-wrap input { padding-left: 26px; }
+
+  .submit-row { display: flex; gap: 12px; margin-top: 8px; }
+  button {
+    padding: 13px 24px;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: opacity 0.15s, transform 0.1s;
+  }
+  button:active { transform: translateY(1px); }
+  .btn-primary { background: #2196F3; color: #000; }
+  .btn-primary:hover { opacity: 0.9; }
+  .btn-secondary {
+    background: transparent;
+    color: #ccc;
+    border: 1px solid #2a2a2a;
+  }
+  .btn-secondary:hover { border-color: #444; color: #fff; }
+
+  .result {
+    margin-top: 28px;
+    padding: 24px;
+    border-radius: 10px;
+    display: none;
+  }
+  .result.show { display: block; }
+  .result.pass {
+    background: rgba(34, 197, 94, 0.10);
+    border: 1px solid #22c55e;
+  }
+  .result.fail {
+    background: rgba(229, 62, 94, 0.10);
+    border: 1px solid #e53e5e;
+  }
+  .result-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+  .result.pass .result-title { color: #22c55e; }
+  .result.fail .result-title { color: #e53e5e; }
+  .next-steps {
+    margin-top: 4px;
+    margin-bottom: 14px;
+    padding: 12px 14px;
+    background: #000;
+    border-left: 3px solid #22c55e;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #e8e8e8;
+  }
+  .result.fail .next-steps { border-left-color: #e53e5e; }
+  .next-steps-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #888;
+    margin-bottom: 4px;
+  }
+  .result-reason { color: #ccc; font-size: 14px; margin-bottom: 14px; }
+  .result-summary {
+    background: #000;
+    border: 1px solid #1f1f1f;
+    border-radius: 6px;
+    padding: 14px;
+    font-family: "SF Mono", Monaco, Consolas, monospace;
+    font-size: 13px;
+    color: #ccc;
+    white-space: pre-wrap;
+    margin-bottom: 14px;
+    user-select: all;
+    cursor: text;
+  }
+  .copy-btn {
+    background: #1a1a1a;
+    color: #fff;
+    border: 1px solid #333;
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+  .copy-btn:hover { background: #222; }
+  footer { text-align: center; color: #555; font-size: 12px; margin-top: 40px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="brand">
+      <img src="data:image/png;base64,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"
+           alt="MarketBridge"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';" />
+      <span class="fallback" style="display:none;">marketbridge</span>
+    </div>
+    <div class="tagline">Sales Qualification</div>
+  </header>
+
+  <h1>BANT Qualification Gate</h1>
+  <p class="subtitle">Complete this checklist before responding to any new opportunity. Any disqualifying answer will flag the lead for decline.</p>
+
+  <form id="bantForm" onsubmit="return false;">
+
+    <div class="section">
+      <div class="section-title">Opportunity Details</div>
+      <div class="two-col">
+        <div class="field">
+          <label for="company">Company</label>
+          <input type="text" id="company" required placeholder="Acme Corp" />
+        </div>
+        <div class="field">
+          <label for="division">Division</label>
+          <input type="text" id="division" placeholder="e.g. North America Enterprise" />
+        </div>
+      </div>
+      <div class="field">
+        <label for="summary">Opportunity Summary</label>
+        <div class="hint">Brief description of the prospect, their ask, and the proposed engagement.</div>
+        <textarea id="summary" placeholder="Describe the opportunity, stakeholders, and context..."></textarea>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">BANT Criteria</div>
+
+      <div class="criterion">
+        <div class="criterion-text">
+          <div class="criterion-title">1. Budget Confirmed</div>
+          <div class="criterion-q">Has the prospect confirmed an allocated budget?</div>
+        </div>
+        <div class="toggle-group">
+          <input type="radio" name="budgetConfirmed" id="bc-yes" value="yes" />
+          <label for="bc-yes" class="yes">Yes</label>
+          <input type="radio" name="budgetConfirmed" id="bc-no" value="no" />
+          <label for="bc-no" class="no">No</label>
+        </div>
+      </div>
+
+      <div class="criterion">
+        <div class="criterion-text">
+          <div class="criterion-title">2. Budget Threshold</div>
+          <div class="criterion-q">Estimated deal size (USD).</div>
+        </div>
+        <div class="budget-input-wrap">
+          <input type="number" id="budgetAmount" min="0" step="1000" placeholder="0" style="width: 160px;" />
+        </div>
+      </div>
+
+      <div class="criterion">
+        <div class="criterion-text">
+          <div class="criterion-title">3. Authority</div>
+          <div class="criterion-q">Was the conversation with a decision-maker holding direct purchasing authority?</div>
+        </div>
+        <div class="toggle-group">
+          <input type="radio" name="authority" id="auth-yes" value="yes" />
+          <label for="auth-yes" class="yes">Yes</label>
+          <input type="radio" name="authority" id="auth-no" value="no" />
+          <label for="auth-no" class="no">No</label>
+        </div>
+      </div>
+
+      <div class="criterion">
+        <div class="criterion-text">
+          <div class="criterion-title">4. Need</div>
+          <div class="criterion-q">Has a concrete business need been clearly articulated and confirmed?</div>
+        </div>
+        <div class="toggle-group">
+          <input type="radio" name="need" id="need-yes" value="yes" />
+          <label for="need-yes" class="yes">Yes</label>
+          <input type="radio" name="need" id="need-no" value="no" />
+          <label for="need-no" class="no">No</label>
+        </div>
+      </div>
+
+      <div class="criterion">
+        <div class="criterion-text">
+          <div class="criterion-title">5. Timing</div>
+          <div class="criterion-q">Is the opportunity expected to close within the current or next quarter?</div>
+        </div>
+        <div class="toggle-group">
+          <input type="radio" name="timing" id="time-yes" value="yes" />
+          <label for="time-yes" class="yes">Yes</label>
+          <input type="radio" name="timing" id="time-no" value="no" />
+          <label for="time-no" class="no">No</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="submit-row">
+      <button type="button" class="btn-primary" onclick="evaluateOpportunity()">Evaluate Opportunity</button>
+      <button type="button" class="btn-secondary" onclick="resetForm()">Reset</button>
+    </div>
+  </form>
+
+  <div id="result" class="result">
+    <div class="result-title" id="resultTitle"></div>
+    <div class="result-reason" id="resultReason"></div>
+    <div class="next-steps" id="nextSteps">
+      <span class="next-steps-label">Next Steps</span>
+      <span id="nextStepsText"></span>
+    </div>
+    <div class="result-summary" id="resultSummary"></div>
+    <button class="copy-btn" onclick="copySummary()">Copy Summary</button>
+  </div>
+
+  <footer>MarketBridge &copy; Internal Sales Tool</footer>
+</div>
+
+<script>
+  function getVal(name) {
+    const el = document.querySelector(`input[name="${name}"]:checked`);
+    return el ? el.value : null;
+  }
+
+  function evaluateOpportunity() {
+    const company = document.getElementById('company').value.trim();
+    const division = document.getElementById('division').value.trim();
+    const summary = document.getElementById('summary').value.trim();
+    const budgetConfirmed = getVal('budgetConfirmed');
+    const budgetAmount = parseFloat(document.getElementById('budgetAmount').value) || 0;
+    const authority = getVal('authority');
+    const need = getVal('need');
+    const timing = getVal('timing');
+
+    if (!company) { alert('Please enter the company name.'); return; }
+    if (budgetConfirmed === null) { alert('Please answer the Budget Confirmed question.'); return; }
+    if (authority === null) { alert('Please answer the Authority question.'); return; }
+    if (need === null) { alert('Please answer the Need question.'); return; }
+    if (timing === null) { alert('Please answer the Timing question.'); return; }
+
+    const failures = [];
+    if (budgetConfirmed === 'no') failures.push('Budget not confirmed');
+    if (budgetAmount < 100000) failures.push(`Budget below minimum threshold (entered: $${budgetAmount.toLocaleString()})`);
+    if (authority === 'no') failures.push('Contact lacks direct purchasing authority');
+    if (need === 'no') failures.push('Business need not confirmed');
+    if (timing === 'no') failures.push('Timing outside one-quarter window');
+
+    const passed = failures.length === 0;
+    const resultEl = document.getElementById('result');
+    const titleEl = document.getElementById('resultTitle');
+    const reasonEl = document.getElementById('resultReason');
+    const summaryEl = document.getElementById('resultSummary');
+
+    resultEl.className = 'result show ' + (passed ? 'pass' : 'fail');
+    document.body.className = passed ? 'pass' : 'fail';
+    titleEl.textContent = passed ? 'Qualified — Proceed with Response' : 'Does Not Meet Criteria — Recommend Decline';
+    reasonEl.textContent = passed
+      ? 'All BANT criteria satisfied.'
+      : 'The following criterion/criteria did not pass: ' + failures.join('; ') + '.';
+    document.getElementById('nextStepsText').textContent = passed
+      ? 'Reach out to the appropriate Practice Areas Team to align on response and ownership.'
+      : 'Send a polite decline to the prospect. No further action required from Practice Areas.';
+
+    const summaryText =
+`MarketBridge BANT Qualification
+--------------------------------
+Company:     ${company}
+Division:    ${division || '(not specified)'}
+Summary:     ${summary || '(not specified)'}
+
+Budget Confirmed:  ${budgetConfirmed.toUpperCase()}
+Budget Amount:     $${budgetAmount.toLocaleString()}
+Authority:         ${authority.toUpperCase()}
+Need Confirmed:    ${need.toUpperCase()}
+Timing (<=1 Qtr):  ${timing.toUpperCase()}
+
+Verdict: ${passed ? 'QUALIFIED — PROCEED' : 'DECLINE RECOMMENDED'}
+${passed ? '' : 'Reason(s): ' + failures.join('; ')}`;
+
+    summaryEl.textContent = summaryText;
+    resultEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function copySummary() {
+    const text = document.getElementById('resultSummary').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = event.target;
+      const original = btn.textContent;
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = original, 1500);
+    });
+  }
+
+  function resetForm() {
+    document.getElementById('bantForm').reset();
+    document.getElementById('result').className = 'result';
+    document.body.className = '';
+  }
+</script>
+</body>
+</html>
